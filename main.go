@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"storage/internal/frameworks/app"
+)
 
 func main() {
-	fmt.Println("initial commit ;)")
+	server := app.Setup()
+	if err := server.Run(); err != nil {
+		log.Fatalf("failed to start server - err %v", err)
+	}
 }
