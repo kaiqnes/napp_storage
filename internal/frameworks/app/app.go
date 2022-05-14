@@ -21,7 +21,7 @@ func Setup() *gin.Engine {
 }
 
 func loadEnvFile() {
-	err := godotenv.Load("")
+	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
