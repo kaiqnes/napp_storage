@@ -1,13 +1,16 @@
 package entities
 
-import "gorm.io/gorm"
+import (
+	"time"
+)
 
 type Product struct {
-	gorm.Model
-	Code          string
-	Name          string
+	Code          string  `gorm:"primary_key;size:100"`
+	Name          string  `gorm:"size:255"`
 	TotalStorage  uint    // Estoque total
 	CorteStorage  uint    // Estoque de corte
 	OriginalPrice float64 // Preço de
 	SalePrice     float64 // Preço por
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
