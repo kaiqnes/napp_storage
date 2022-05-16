@@ -44,6 +44,6 @@ O comando 'make stop' encerrará a atividade dos containers.
 ## Testes e documentação
 Para verificar se a aplicação está no ar, existe uma URL de [HEALTH_CHECK](http://localhost:8080/health).
 
-Para os testes, o projeto conta com uma [POSTMAN_COLLECTION](https://github.com/kaiqnes/digibank/blob/main/napp_storage.postman_collection.json) para auxiliar nas requisições;
+Para os testes, o projeto conta com uma [POSTMAN_COLLECTION](https://github.com/kaiqnes/napp_storage/blob/master/Napp_Storage.postman_collection.json) para auxiliar nas requisições;
 
 Também existe um [SWAGGER](http://localhost:8080/swagger/index.html) para que possa ser observado em maiores detalhes os retornos possiveis de cada rota.
