@@ -3,17 +3,13 @@ package traceability
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func Info(ctx *gin.Context, message string) {
-	fmt.Println("[INFO]", GetRequestID(ctx), message)
+	fmt.Printf("[INFO] [%v] [RequestID:%s] %s\n", time.Now().Format(time.RFC3339), GetRequestID(ctx), message)
 }
 
-//func Infof(ctx *gin.Context, template string, args ...interface{}) {
-//	msgWithReqID := fmt.Sprintf("%s %s", GetRequestID(ctx), template)
-//	fmt.Printf(fmt.Sprintf(msgWithReqID, args))
-//}
-//
-//func Info(ctx *gin.Context, message string) {
-//	fmt.Println(fmt.Sprintf("%s %s", GetRequestID(ctx), message))
-//}
+func Error(ctx *gin.Context, message string) {
+	fmt.Printf("[ERROR] [%v] [RequestID:%s] %s\n", time.Now().Format(time.RFC3339), GetRequestID(ctx), message)
+}
