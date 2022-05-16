@@ -51,4 +51,6 @@ func (di *dependencyInjection) injectStructuralResources() {
 	healthCheck.SetupEndpoints()
 
 	/* Swagger */
+	swagger := controllers.NewSwaggerController(di.routes)
+	swagger.SetupEndpoints()
 }

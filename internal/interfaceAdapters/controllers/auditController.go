@@ -30,6 +30,15 @@ func (controller *auditController) SetupEndpoints() {
 	controller.routes.GET("/logs", controller.getLogs)
 }
 
+// getLogs 	 godoc
+// @Summary      This endpoint list all logs
+// @Description  This endpoint list all logs in details
+// @Tags         Audit
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} []dto.AuditDto
+// @Failure      500 {object} dto.ErrorOutputDto
+// @Router       /api/v1/logs [get]
 func (controller *auditController) getLogs(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)

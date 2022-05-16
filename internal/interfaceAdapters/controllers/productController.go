@@ -46,6 +46,15 @@ func (controller *productController) SetupEndpoints() {
 	controller.routes.DELETE("/products/:productCode", controller.deleteProduct)
 }
 
+// getProducts 	 godoc
+// @Summary      This endpoint list all products
+// @Description  This endpoint list all products in details
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} []dto.ProductOutputDto
+// @Failure      500 {object} dto.ErrorOutputDto
+// @Router       /api/v1/products [get]
 func (controller *productController) getProducts(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)
@@ -66,6 +75,16 @@ func (controller *productController) getProducts(ctx *gin.Context) {
 	controller.presenter.PresentGetProducts(ctx, products)
 }
 
+// getProduct 	 godoc
+// @Summary      This endpoint list a specific product
+// @Description  This endpoint list a specific product in details
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param 		 productCode path string true "Product Code"
+// @Success      200 {object} []dto.ProductOutputDto
+// @Failure      500 {object} dto.ErrorOutputDto
+// @Router       /api/v1/products/{productCode} [get]
 func (controller *productController) getProduct(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)
@@ -82,6 +101,17 @@ func (controller *productController) getProduct(ctx *gin.Context) {
 	controller.presenter.PresentGetProducts(ctx, []entities.Product{product})
 }
 
+// createProduct 	 godoc
+// @Summary      This endpoint creates a product
+// @Description  This endpoint creates a product with a unique product code and where the price_from must be higher than price_to
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param request_body body string true "Details about product to be created" SchemaExample({\r\n  "code": "abc1",\r\n  "name": "melancia",\r\n  "storage": {\r\n    "total": 25,\r\n    "corte": 5\r\n  },\r\n  "price_from": 5,\r\n  "price_to": 7\r\n})
+// @Success      201 {object} []dto.ProductOutputDto
+// @Failure      400 {object} []dto.ErrorsOutputDto
+// @Failure      500 {object} dto.ErrorOutputDto
+// @Router       /api/v1/products [post]
 func (controller *productController) createProduct(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)
@@ -106,6 +136,18 @@ func (controller *productController) createProduct(ctx *gin.Context) {
 	controller.presenter.PresentCreateProduct(ctx, createdProduct)
 }
 
+// updateProduct 	 godoc
+// @Summary      This endpoint updates a product
+// @Description  This endpoint updates a product with a unique product code and where the price_from must be higher than price_to
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param 		 productCode path string true "Product Code"
+// @Param request_body body string true "Details about product to be updated" SchemaExample({\r\n  "code": "abc1",\r\n  "name": "melancia",\r\n  "storage": {\r\n    "total": 25,\r\n    "corte": 5\r\n  },\r\n  "price_from": 7,\r\n  "price_to": 5\r\n})
+// @Success      200 {object} []dto.ProductOutputDto
+// @Failure      400 {object} []dto.ErrorsOutputDto
+// @Failure      500 {object} dto.ErrorOutputDto
+// @Router       /api/v1/products/{productCode} [put]
 func (controller *productController) updateProduct(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)
@@ -132,6 +174,17 @@ func (controller *productController) updateProduct(ctx *gin.Context) {
 	controller.presenter.PresentUpdateProduct(ctx, createdProduct)
 }
 
+// deleteProduct 	 godoc
+// @Summary      This endpoint deletes a product
+// @Description  This endpoint deletes a product with a unique product code and where the price_from must be higher than price_to
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param 		 productCode path string true "Product Code"
+// @Success      204
+// @Failure      404 {object} dto.ErrorOutputDto
+// @Failure      500 {object} dto.ErrorOutputDto
+// @Router       /api/v1/products/{productCode} [delete]
 func (controller *productController) deleteProduct(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)

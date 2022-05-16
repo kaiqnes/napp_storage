@@ -1,0 +1,257 @@
+basePath: /
+definitions:
+  dto.AuditDto:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      product_id:
+        type: string
+      request_id:
+        type: string
+    type: object
+  dto.ErrorOutputDto:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.ErrorsOutputDto:
+    properties:
+      fields:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+    type: object
+  dto.ProductOutputDto:
+    properties:
+      code:
+        type: string
+      created_at:
+        type: string
+      name:
+        type: string
+      price_from:
+        type: number
+      price_to:
+        type: number
+      storage:
+        $ref: '#/definitions/dto.StorageOutputDto'
+      updated_at:
+        type: string
+    type: object
+  dto.StorageOutputDto:
+    properties:
+      corte:
+        type: integer
+      disponivel:
+        type: integer
+      total:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Caique Nunes
+    url: https://www.linkedin.com/in/caique-nunes/
+  description: This is a code challenge that manages some storage routines.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: NAPP Storage
+  version: "1.0"
+paths:
+  /api/v1/logs:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint list all logs in details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.AuditDto'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorOutputDto'
+      summary: This endpoint list all logs
+      tags:
+      - Audit
+  /api/v1/products:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint list all products in details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.ProductOutputDto'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorOutputDto'
+      summary: This endpoint list all products
+      tags:
+      - Products
+    post:
+      consumes:
+      - application/json
+      description: This endpoint creates a product with a unique product code and
+        where the price_from must be higher than price_to
+      parameters:
+      - description: Details about product to be created
+        in: body
+        name: request_body
+        required: true
+        schema:
+          example: "{\r\n  \"code\": \"abc1\",\r\n  \"name\": \"melancia\",\r\n  \"storage\":
+            {\r\n    \"total\": 25,\r\n    \"corte\": 5\r\n  },\r\n  \"price_from\":
+            5,\r\n  \"price_to\": 7\r\n}"
+          type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/dto.ProductOutputDto'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            items:
+              $ref: '#/definitions/dto.ErrorsOutputDto'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorOutputDto'
+      summary: This endpoint creates a product
+      tags:
+      - Products
+  /api/v1/products/{productCode}:
+    delete:
+      consumes:
+      - application/json
+      description: This endpoint deletes a product with a unique product code and
+        where the price_from must be higher than price_to
+      parameters:
+      - description: Product Code
+        in: path
+        name: productCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorOutputDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorOutputDto'
+      summary: This endpoint deletes a product
+      tags:
+      - Products
+    get:
+      consumes:
+      - application/json
+      description: This endpoint list a specific product in details
+      parameters:
+      - description: Product Code
+        in: path
+        name: productCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.ProductOutputDto'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorOutputDto'
+      summary: This endpoint list a specific product
+      tags:
+      - Products
+    put:
+      consumes:
+      - application/json
+      description: This endpoint updates a product with a unique product code and
+        where the price_from must be higher than price_to
+      parameters:
+      - description: Product Code
+        in: path
+        name: productCode
+        required: true
+        type: string
+      - description: Details about product to be updated
+        in: body
+        name: request_body
+        required: true
+        schema:
+          example: "{\r\n  \"code\": \"abc1\",\r\n  \"name\": \"melancia\",\r\n  \"storage\":
+            {\r\n    \"total\": 25,\r\n    \"corte\": 5\r\n  },\r\n  \"price_from\":
+            7,\r\n  \"price_to\": 5\r\n}"
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.ProductOutputDto'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            items:
+              $ref: '#/definitions/dto.ErrorsOutputDto'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorOutputDto'
+      summary: This endpoint updates a product
+      tags:
+      - Products
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: This description endpoint is a health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      summary: This summary endpoint is a health check
+      tags:
+      - HealthCheck
+swagger: "2.0"

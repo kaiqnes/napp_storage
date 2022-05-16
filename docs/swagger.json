@@ -1,0 +1,378 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a code challenge that manages some storage routines.",
+        "title": "NAPP Storage",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Caique Nunes",
+            "url": "https://www.linkedin.com/in/caique-nunes/"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/logs": {
+            "get": {
+                "description": "This endpoint list all logs in details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "This endpoint list all logs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.AuditDto"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorOutputDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/products": {
+            "get": {
+                "description": "This endpoint list all products in details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "This endpoint list all products",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ProductOutputDto"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorOutputDto"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "This endpoint creates a product with a unique product code and where the price_from must be higher than price_to",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "This endpoint creates a product",
+                "parameters": [
+                    {
+                        "description": "Details about product to be created",
+                        "name": "request_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "{\r\n  \"code\": \"abc1\",\r\n  \"name\": \"melancia\",\r\n  \"storage\": {\r\n    \"total\": 25,\r\n    \"corte\": 5\r\n  },\r\n  \"price_from\": 5,\r\n  \"price_to\": 7\r\n}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ProductOutputDto"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ErrorsOutputDto"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorOutputDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/products/{productCode}": {
+            "get": {
+                "description": "This endpoint list a specific product in details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "This endpoint list a specific product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product Code",
+                        "name": "productCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ProductOutputDto"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorOutputDto"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "This endpoint updates a product with a unique product code and where the price_from must be higher than price_to",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "This endpoint updates a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product Code",
+                        "name": "productCode",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Details about product to be updated",
+                        "name": "request_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "{\r\n  \"code\": \"abc1\",\r\n  \"name\": \"melancia\",\r\n  \"storage\": {\r\n    \"total\": 25,\r\n    \"corte\": 5\r\n  },\r\n  \"price_from\": 7,\r\n  \"price_to\": 5\r\n}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ProductOutputDto"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ErrorsOutputDto"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorOutputDto"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "This endpoint deletes a product with a unique product code and where the price_from must be higher than price_to",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "This endpoint deletes a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product Code",
+                        "name": "productCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorOutputDto"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorOutputDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "This description endpoint is a health check",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "HealthCheck"
+                ],
+                "summary": "This summary endpoint is a health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.AuditDto": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "string"
+                },
+                "request_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ErrorOutputDto": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ErrorsOutputDto": {
+            "type": "object",
+            "properties": {
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ProductOutputDto": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price_from": {
+                    "type": "number"
+                },
+                "price_to": {
+                    "type": "number"
+                },
+                "storage": {
+                    "$ref": "#/definitions/dto.StorageOutputDto"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.StorageOutputDto": {
+            "type": "object",
+            "properties": {
+                "corte": {
+                    "type": "integer"
+                },
+                "disponivel": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
