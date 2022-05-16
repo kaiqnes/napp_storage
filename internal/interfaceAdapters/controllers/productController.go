@@ -19,6 +19,7 @@ type productController struct {
 	routes    *gin.RouterGroup
 	presenter presenters.ProductPresenter
 	useCase   useCases.ProductUseCase
+	logg      traceability.ApiLogger
 }
 
 type ProductController interface {
@@ -30,11 +31,12 @@ type ProductController interface {
 	deleteProduct(ctx *gin.Context)
 }
 
-func NewProductController(routes *gin.RouterGroup, presenter presenters.ProductPresenter, useCase useCases.ProductUseCase) ProductController {
+func NewProductController(routes *gin.RouterGroup, presenter presenters.ProductPresenter, useCase useCases.ProductUseCase, logger traceability.ApiLogger) ProductController {
 	return &productController{
 		routes:    routes,
 		presenter: presenter,
 		useCase:   useCase,
+		logg:      logger,
 	}
 }
 
@@ -58,10 +60,11 @@ func (controller *productController) SetupEndpoints() {
 func (controller *productController) getProducts(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)
-	traceability.Info(ctx, "Incoming in Controller getProducts")
+	controller.logg.Info(ctx, "Incoming in Controller getProducts")
 
 	filterParam, limit, offset, err := getParamsToPaginateAndFilter(ctx)
 	if err != nil {
+		controller.logg.Error(ctx, err.Error())
 		controller.presenter.PresentError(ctx, err, http.StatusBadRequest)
 		return
 	}
@@ -88,7 +91,7 @@ func (controller *productController) getProducts(ctx *gin.Context) {
 func (controller *productController) getProduct(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)
-	traceability.Info(ctx, "from controller in method getProduct")
+	controller.logg.Info(ctx, "Incoming in Controller getProduct")
 
 	productCode := ctx.Param("productCode")
 
@@ -115,14 +118,16 @@ func (controller *productController) getProduct(ctx *gin.Context) {
 func (controller *productController) createProduct(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)
-	traceability.Info(ctx, "from controller in method createProduct")
+	controller.logg.Info(ctx, "Incoming in Controller createProduct")
 
 	productDto, errDto, err := isValidRequestBody(ctx)
 	if err != nil {
+		controller.logg.Error(ctx, err.Error())
 		controller.presenter.PresentError(ctx, err, http.StatusBadRequest)
 		return
 	}
 	if len(errDto.Fields) > 0 {
+		controller.logg.Error(ctx, errDto.Message)
 		controller.presenter.PresentErrors(ctx, errDto, http.StatusBadRequest)
 		return
 	}
@@ -151,16 +156,18 @@ func (controller *productController) createProduct(ctx *gin.Context) {
 func (controller *productController) updateProduct(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)
-	traceability.Info(ctx, "from controller in method updateProduct")
+	controller.logg.Info(ctx, "Incoming in Controller updateProduct")
 
 	productCode := ctx.Param("productCode")
 
 	productDto, errDto, err := isValidRequestBody(ctx)
 	if err != nil {
+		controller.logg.Error(ctx, err.Error())
 		controller.presenter.PresentError(ctx, err, http.StatusBadRequest)
 		return
 	}
 	if len(errDto.Fields) > 0 {
+		controller.logg.Error(ctx, err.Error())
 		controller.presenter.PresentErrors(ctx, errDto, http.StatusBadRequest)
 		return
 	}
@@ -188,7 +195,7 @@ func (controller *productController) updateProduct(ctx *gin.Context) {
 func (controller *productController) deleteProduct(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)
-	traceability.Info(ctx, "from controller in method deleteProduct")
+	controller.logg.Info(ctx, "Incoming in Controller deleteProduct")
 
 	productCode := ctx.Param("productCode")
 
@@ -211,12 +218,6 @@ func isValidRequestBody(ctx *gin.Context) (product dto.ProductInputDto, errDto d
 	}
 	if product.Name == "" {
 		errDto.Fields = append(errDto.Fields, "name must not be empty")
-	}
-	if product.Storage.Total < 0 {
-		errDto.Fields = append(errDto.Fields, "storage.total must not be less than zero")
-	}
-	if product.Storage.Corte < 0 {
-		errDto.Fields = append(errDto.Fields, "storage.corte must not be less than zero")
 	}
 	if product.PriceFrom < 0 {
 		errDto.Fields = append(errDto.Fields, "price_from must not be less than zero")
@@ -247,7 +248,6 @@ func getParamsToPaginateAndFilter(ctx *gin.Context) (string, int, int, error) {
 		parsedLimit, err := strconv.ParseUint(limit, 10, 32)
 		if err != nil {
 			errMsg := fmt.Sprintf("Failed to parse limit. Received: %s | It must be numeric, integer and positive", limit)
-			traceability.Error(ctx, errMsg)
 			return filterParam, iLimit, iOffset, errors.New(errMsg)
 		}
 		iLimit = int(parsedLimit)
@@ -257,14 +257,12 @@ func getParamsToPaginateAndFilter(ctx *gin.Context) (string, int, int, error) {
 		parsedOffset, err := strconv.ParseUint(offset, 10, 32)
 		if err != nil {
 			errMsg := fmt.Sprintf("Failed to parse offset. Received: %s | It must be numeric, integer and positive", offset)
-			traceability.Error(ctx, errMsg)
 			return filterParam, iLimit, iOffset, errors.New(errMsg)
 		}
 		iOffset = int(parsedOffset)
 	}
 
 	if iLimit == 0 {
-		traceability.Info(ctx, "Using default limit")
 		iLimit = defaultLimit
 	}
 

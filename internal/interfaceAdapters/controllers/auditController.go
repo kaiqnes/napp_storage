@@ -11,6 +11,7 @@ type auditController struct {
 	routes    *gin.RouterGroup
 	presenter presenters.AuditPresenter
 	useCase   useCases.AuditUseCase
+	logg      traceability.ApiLogger
 }
 
 type AuditController interface {
@@ -18,11 +19,12 @@ type AuditController interface {
 	getLogs(ctx *gin.Context)
 }
 
-func NewAuditController(routes *gin.RouterGroup, presenter presenters.AuditPresenter, useCase useCases.AuditUseCase) AuditController {
+func NewAuditController(routes *gin.RouterGroup, presenter presenters.AuditPresenter, useCase useCases.AuditUseCase, logger traceability.ApiLogger) AuditController {
 	return &auditController{
 		routes:    routes,
 		presenter: presenter,
 		useCase:   useCase,
+		logg:      logger,
 	}
 }
 
@@ -42,7 +44,7 @@ func (controller *auditController) SetupEndpoints() {
 func (controller *auditController) getLogs(ctx *gin.Context) {
 	// Generate RequestID to track logs
 	traceability.ValidateRequestID(ctx)
-	traceability.Info(ctx, "Incoming in Controller getLogs")
+	controller.logg.Info(ctx, "Incoming in Controller getLogs")
 
 	logs, errx := controller.useCase.GetLogs(ctx)
 	if errx != nil {

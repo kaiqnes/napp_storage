@@ -3,6 +3,7 @@ package di
 import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"storage/internal/frameworks/traceability"
 	"storage/internal/interfaceAdapters/controllers"
 	"storage/internal/interfaceAdapters/presenters"
 	"storage/internal/interfaceAdapters/repository"
@@ -29,19 +30,20 @@ func (di *dependencyInjection) SetupDependencies() {
 func (di *dependencyInjection) injectPublicResources() {
 	publicGroup := di.routes.Group("/api/v1")
 	errorPresenter := presenters.NewErrorPresenter()
+	apiLogger := traceability.NewApiLogger()
 
 	/* Audit Resource */
 	auditPresenter := presenters.NewAuditPresenter(errorPresenter)
 	auditRepository := repository.NewAuditRepository(di.db)
-	auditUseCase := useCases.NewAuditUseCase(auditRepository)
-	auditController := controllers.NewAuditController(publicGroup, auditPresenter, auditUseCase)
+	auditUseCase := useCases.NewAuditUseCase(auditRepository, apiLogger)
+	auditController := controllers.NewAuditController(publicGroup, auditPresenter, auditUseCase, apiLogger)
 	auditController.SetupEndpoints()
 
 	/* Product Resource */
 	productPresenter := presenters.NewProductPresenter(errorPresenter)
 	productRepository := repository.NewProductRepository(di.db)
-	productUseCase := useCases.NewProductUseCase(productRepository, auditRepository)
-	productController := controllers.NewProductController(publicGroup, productPresenter, productUseCase)
+	productUseCase := useCases.NewProductUseCase(productRepository, auditRepository, apiLogger)
+	productController := controllers.NewProductController(publicGroup, productPresenter, productUseCase, apiLogger)
 	productController.SetupEndpoints()
 }
 
