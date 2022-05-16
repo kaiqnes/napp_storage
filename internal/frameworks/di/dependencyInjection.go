@@ -46,6 +46,9 @@ func (di *dependencyInjection) injectPublicResources() {
 }
 
 func (di *dependencyInjection) injectStructuralResources() {
-	//HealthCheck
-	//Swagger
+	/* HealthCheck */
+	healthCheck := controllers.NewHealthCheckController(di.routes)
+	healthCheck.SetupEndpoints()
+
+	/* Swagger */
 }
