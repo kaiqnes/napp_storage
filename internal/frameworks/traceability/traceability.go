@@ -1,13 +1,12 @@
 package traceability
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 func NewRequestID() string {
-	return fmt.Sprintf("[RequestID:%s]", uuid.New().String())
+	return uuid.New().String()
 }
 
 func GetRequestID(ctx *gin.Context) string {
