@@ -1,9 +1,10 @@
 package entities
 
-import "gorm.io/gorm"
+import "time"
 
 type Audit struct {
-	gorm.Model
-	ProductID   uint
+	RequestID   string `gorm:"primary_key;size:100"`
+	ProductID   string
 	Description string
+	CreatedAt   time.Time
 }
