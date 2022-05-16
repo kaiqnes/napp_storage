@@ -10,6 +10,7 @@ type auditRepository struct {
 	session *gorm.DB
 }
 
+//go:generate mockgen -source=./auditRepository.go -destination=./mocks/auditRepository_mock.go
 type AuditRepository interface {
 	SaveLog(requestID string, entity string, msg string)
 	GetLogs() ([]entities.Audit, error)

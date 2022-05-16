@@ -10,6 +10,7 @@ type productRepository struct {
 	session *gorm.DB
 }
 
+//go:generate mockgen -source=./productRepository.go -destination=./mocks/productRepository_mock.go
 type ProductRepository interface {
 	GetProducts(filterParam string, limit, offset int) ([]entities.Product, error)
 	GetProduct(code string) (entities.Product, error)

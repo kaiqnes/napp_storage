@@ -16,6 +16,7 @@ type auditUseCase struct {
 	logg            traceability.ApiLogger
 }
 
+//go:generate mockgen -source=./auditUseCase.go -destination=./mocks/auditUseCase_mock.go
 type AuditUseCase interface {
 	GetLogs(ctx *gin.Context) ([]entities.Audit, errorx.Errorx)
 }

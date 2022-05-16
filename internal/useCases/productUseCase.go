@@ -20,6 +20,7 @@ type productUseCase struct {
 	logg              traceability.ApiLogger
 }
 
+//go:generate mockgen -source=./productUseCase.go -destination=./mocks/productUseCase_mock.go
 type ProductUseCase interface {
 	GetProducts(ctx *gin.Context, filterParam string, limit, offset int) ([]entities.Product, errorx.Errorx)
 	GetProduct(ctx *gin.Context, code string) (entities.Product, errorx.Errorx)
